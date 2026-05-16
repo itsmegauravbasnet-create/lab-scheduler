@@ -192,6 +192,7 @@ body {
 .task-desc {
     font-size: 0.9rem;
     color: var(--text-muted);
+    white-space: pre-wrap;
 }
 
 .empty-state {
@@ -265,9 +266,74 @@ input[type="text"], input[type="date"], input[type="time"], select {
     transition: border-color 0.2s;
 }
 
-input:focus, select:focus {
+input:focus, select:focus, textarea:focus {
     outline: none;
     border-color: var(--accent);
+}
+
+textarea {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    background: rgba(0,0,0,0.3);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+    resize: vertical;
+}
+
+.form-row {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.form-group.half {
+    margin-bottom: 0;
+    flex: 1;
+}
+
+.auto-schedule-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin: 1.5rem 0;
+}
+
+.auto-schedule-header {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--glass-border);
+}
+
+.auto-title {
+    font-weight: 600;
+    color: var(--accent);
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.auto-options {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.auto-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+.auto-option input {
+    margin-top: 0.2rem;
 }
 
 .checkbox-label {
@@ -276,6 +342,13 @@ input:focus, select:focus {
     gap: 0.5rem;
     color: var(--text-main);
     cursor: pointer;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-top: 1.5rem;
 }
 
 .btn-primary {
@@ -288,8 +361,28 @@ input:focus, select:focus {
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 1rem;
     transition: background 0.2s;
+}
+
+.btn-secondary {
+    width: 100%;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-main);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-secondary:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.hidden {
+    display: none !important;
 }
 
 .btn-primary:hover {

@@ -48,33 +48,91 @@
                     <button id="closeModal" class="icon-btn">&times;</button>
                 </div>
                 <form id="addForm">
-                    <div class="form-group">
-                        <label for="castDate">Cast Date</label>
-                        <input type="date" id="castDate" required>
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="castDate">Cast Date *</label>
+                            <input type="date" id="castDate" required>
+                        </div>
+                        <div class="form-group half">
+                            <label for="castTime">Planned Time *</label>
+                            <input type="time" id="castTime" value="09:00" required>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="castTime">Planned Time</label>
-                        <input type="time" id="castTime" value="09:00" required>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="material">Material / Mix *</label>
+                            <input type="text" id="material" placeholder="e.g. Calcined Clay 20%" required>
+                        </div>
+                        <div class="form-group half">
+                            <label for="batchId">Batch ID</label>
+                            <input type="text" id="batchId" placeholder="e.g. 20CC-A-C109">
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="material">Material / Mix</label>
-                        <input type="text" id="material" placeholder="e.g. Calcined Clay 20%" required>
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="testStandard">Test Standard *</label>
+                            <select id="testStandard" required>
+                                <option value="ASTM C109">ASTM C109 — Compressive (cubes)</option>
+                                <option value="ASTM C1012">ASTM C1012 — Sulfate</option>
+                                <option value="Other">Other / Custom</option>
+                            </select>
+                        </div>
+                        <div class="form-group half">
+                            <label for="specimenCount">Specimen Count</label>
+                            <input type="number" id="specimenCount" placeholder="12" value="12">
+                        </div>
                     </div>
+
                     <div class="form-group">
-                        <label for="testStandard">Test Standard</label>
-                        <select id="testStandard">
-                            <option value="ASTM C109">ASTM C109 — Compressive</option>
-                            <option value="ASTM C1012">ASTM C1012 — Sulfate</option>
-                            <option value="Other">Other / Custom</option>
-                        </select>
+                        <label for="actionNotes">Action / Notes</label>
+                        <textarea id="actionNotes" placeholder="e.g. Adjust w/cm if flow > 120mm" rows="2"></textarea>
                     </div>
-                    <div class="form-group">
+
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="remarks">Remarks</label>
+                            <input type="text" id="remarks" placeholder="optional">
+                        </div>
+                        <div class="form-group half">
+                            <label for="studentAssigned">Student Assigned</label>
+                            <input type="text" id="studentAssigned" placeholder="optional">
+                        </div>
+                    </div>
+
+                    <div class="auto-schedule-box">
+                        <div class="auto-schedule-header">
+                            <label class="auto-title">Auto-schedule (<span id="autoScheduleTitle">ASTM C109</span>)</label>
+                        </div>
+                        
+                        <div id="c109Options" class="auto-options">
+                            <label class="auto-option"><input type="checkbox" id="c109_1day" checked> Demold + 1-day test + clean molds (day 1)</label>
+                            <label class="auto-option"><input type="checkbox" id="c109_7day" checked> 7-day compressive test</label>
+                            <label class="auto-option"><input type="checkbox" id="c109_28day" checked> 28-day compressive test</label>
+                            <label class="auto-option"><input type="checkbox" id="c109_56day" checked> 56-day compressive test</label>
+                        </div>
+
+                        <div id="c1012Options" class="auto-options hidden">
+                            <label class="auto-option"><input type="checkbox" id="c1012_demold" checked> Demold mortar bars (day 1)</label>
+                            <label class="auto-option"><input type="checkbox" id="c1012_week1" checked> Week 1 Measurement & Solution Change</label>
+                            <label class="auto-option"><input type="checkbox" id="c1012_week2" checked> Week 2 Measurement & Solution Change</label>
+                            <label class="auto-option"><input type="checkbox" id="c1012_week3" checked> Week 3 Measurement & Solution Change</label>
+                            <label class="auto-option"><input type="checkbox" id="c1012_week4" checked> Week 4 Measurement & Solution Change</label>
+                        </div>
+                    </div>
+
+                    <div class="form-group mt-2">
                         <label class="checkbox-label">
                             <input type="checkbox" id="notify" checked>
-                            Enable Notifications
+                            Enable local notifications for these tasks
                         </label>
                     </div>
-                    <button type="submit" class="btn-primary">Auto-Schedule Tasks</button>
+
+                    <div class="modal-actions">
+                        <button type="submit" class="btn-primary">Add to Schedule</button>
+                        <button type="button" class="btn-secondary" id="closeModal">Cancel</button>
+                    </div>
                 </form>
             </div>
         </div>

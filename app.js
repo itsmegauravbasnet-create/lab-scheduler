@@ -215,11 +215,34 @@ addForm.addEventListener('submit', (e) => {
     const testStandard = document.getElementById('testStandard').value;
     const notify = document.getElementById('notify').checked;
     
-    generateTasks(castDate, castTime, material, testStandard, notify);
+    const batchId = document.getElementById('batchId').value;
+    const specCount = document.getElementById('specimenCount').value;
+    const actionNotes = document.getElementById('actionNotes').value;
+    const remarks = document.getElementById('remarks').value;
+    const student = document.getElementById('studentAssigned').value;
+    
+    // Auto-schedule options
+    const c109Opts = {
+        day1: document.getElementById('c109_1day') ? document.getElementById('c109_1day').checked : true,
+        day7: document.getElementById('c109_7day') ? document.getElementById('c109_7day').checked : true,
+        day28: document.getElementById('c109_28day') ? document.getElementById('c109_28day').checked : true,
+        day56: document.getElementById('c109_56day') ? document.getElementById('c109_56day').checked : true
+    };
+    
+    const c1012Opts = {
+        demold: document.getElementById('c1012_demold') ? document.getElementById('c1012_demold').checked : true,
+        w1: document.getElementById('c1012_week1') ? document.getElementById('c1012_week1').checked : true,
+        w2: document.getElementById('c1012_week2') ? document.getElementById('c1012_week2').checked : true,
+        w3: document.getElementById('c1012_week3') ? document.getElementById('c1012_week3').checked : true,
+        w4: document.getElementById('c1012_week4') ? document.getElementById('c1012_week4').checked : true
+    };
+
+    generateTasks(castDate, castTime, material, testStandard, notify, batchId, specCount, actionNotes, remarks, student, c109Opts, c1012Opts);
     
     addModal.classList.add('hidden');
     addForm.reset();
     document.getElementById('castDate').value = formatDateForInput(new Date());
+    document.getElementById('testStandard').dispatchEvent(new Event('change'));
     
     // Switch to cast date to see the new task
     currentDate = new Date(castDate + 'T00:00:00');
@@ -227,27 +250,73 @@ addForm.addEventListener('submit', (e) => {
     renderTasks();
 });
 
-function generateTasks(dateStr, timeStr, material, standard, notify) {
+document.getElementById('testStandard').addEventListener('change', (e) => {
+    const val = e.target.value;
+    const title = document.getElementById('autoScheduleTitle');
+    const opts109 = document.getElementById('c109Options');
+    const opts1012 = document.getElementById('c1012Options');
+    
+    if (val === 'ASTM C109') {
+        title.textContent = 'ASTM C109';
+        opts109.classList.remove('hidden');
+        opts1012.classList.add('hidden');
+    } else if (val === 'ASTM C1012') {
+        title.textContent = 'ASTM C1012';
+        opts1012.classList.remove('hidden');
+        opts109.classList.add('hidden');
+    } else {
+        title.textContent = 'Custom';
+        opts109.classList.add('hidden');
+        opts1012.classList.add('hidden');
+    }
+});
+
+function generateTasks(dateStr, timeStr, material, standard, notify, batchId, count, notes, remarks, student, c109, c1012) {
+    const details = [
+        batchId ? `Batch: ${batchId}` : '',
+        count ? `Specimens: ${count}` : '',
+        student ? `Student: ${student}` : '',
+        notes ? `Notes: ${notes}` : '',
+        remarks ? `Remarks: ${remarks}` : ''
+    ].filter(Boolean).join(' | ');
+    
+    const baseDesc = details ? `${standard}\n${details}` : standard;
+    
     // Add original casting task
-    addTask(dateStr, timeStr, 'Casting', material, `Cast for ${standard}`, notify);
+    addTask(dateStr, timeStr, 'Casting', material, baseDesc, notify);
     
     if (standard === 'ASTM C109') {
-        R109.forEach(r => {
-            const taskDate = addDays(dateStr, r.d);
-            addTask(taskDate, timeStr, r.cat, material, r.n, notify);
-        });
+        if (c109.day1) {
+            addTask(addDays(dateStr, 1), timeStr, 'Demolding', material, 'Demold cubes; keep in saturated lime water\n' + details, notify);
+            addTask(addDays(dateStr, 1), timeStr, 'Experiment', material, 'Compressive Strength Test - 1 day\n' + details, notify);
+        }
+        if (c109.day7) addTask(addDays(dateStr, 7), timeStr, 'Experiment', material, 'Compressive Strength Test - 7 days\n' + details, notify);
+        if (c109.day28) addTask(addDays(dateStr, 28), timeStr, 'Experiment', material, 'Compressive Strength Test - 28 days\n' + details, notify);
+        if (c109.day56) addTask(addDays(dateStr, 56), timeStr, 'Experiment', material, 'Compressive Strength Test - 56 days\n' + details, notify);
     } else if (standard === 'ASTM C1012') {
-        R1012.forEach(r => {
-            const taskDate = addDays(dateStr, r.d);
-            addTask(taskDate, timeStr, r.cat, material, r.n, notify);
-        });
-        // Generate weekly measurements for 78 weeks (simplified for demo to 4 weeks)
-        const wkly = [1, 2, 3, 4];
-        wkly.forEach(w => {
-            const taskDate = addDays(dateStr, 7 + w * 7);
-            addTask(taskDate, timeStr, 'Measurement', material, `Length Change Measurement - Week ${w}`, notify);
-            addTask(taskDate, timeStr, 'Solution', material, `Replace Na2SO4 solution - Week ${w}`, notify);
-        });
+        if (c1012.demold) {
+            addTask(addDays(dateStr, 1), timeStr, 'Demolding', material, 'Demold mortar bars at ~23.5h\n' + details, notify);
+        }
+        
+        addTask(addDays(dateStr, 6), timeStr, 'Solution', material, 'Prepare Na2SO4 solution DAY BEFORE initial reading\n' + details, notify);
+        addTask(addDays(dateStr, 7), timeStr, 'Measurement', material, 'INITIAL LENGTH READING at 7 days\n' + details, notify);
+        
+        if (c1012.w1) {
+            addTask(addDays(dateStr, 14), timeStr, 'Measurement', material, 'Length Change - Week 1\n' + details, notify);
+            addTask(addDays(dateStr, 14), timeStr, 'Solution', material, 'Replace Na2SO4 - Week 1\n' + details, notify);
+        }
+        if (c1012.w2) {
+            addTask(addDays(dateStr, 21), timeStr, 'Measurement', material, 'Length Change - Week 2\n' + details, notify);
+            addTask(addDays(dateStr, 21), timeStr, 'Solution', material, 'Replace Na2SO4 - Week 2\n' + details, notify);
+        }
+        if (c1012.w3) {
+            addTask(addDays(dateStr, 28), timeStr, 'Measurement', material, 'Length Change - Week 3\n' + details, notify);
+            addTask(addDays(dateStr, 28), timeStr, 'Solution', material, 'Replace Na2SO4 - Week 3\n' + details, notify);
+        }
+        if (c1012.w4) {
+            addTask(addDays(dateStr, 35), timeStr, 'Measurement', material, 'Length Change - Week 4\n' + details, notify);
+            addTask(addDays(dateStr, 35), timeStr, 'Solution', material, 'Replace Na2SO4 - Week 4\n' + details, notify);
+        }
     }
 }
 
