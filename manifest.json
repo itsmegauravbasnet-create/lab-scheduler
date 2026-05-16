@@ -1,0 +1,17 @@
+{
+  "name": "NCHRP 18-21 Lab Scheduler",
+  "short_name": "Lab Sched",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#1a1a2e",
+  "description": "Lab schedule manager for materials testing.",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "1024x1024",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
