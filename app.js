@@ -101,9 +101,10 @@ const HIST = [
   ["2026-05-14","Thursday","2","Measurement","Portland IL (Canada) - Control","ASTM C1012","Control-C1012","6","Length Change Measurement - Week 3","Completed","16:00","","","",""],
 ];
 
-let tasks = JSON.parse(localStorage.getItem('labTasks'));
-if (!tasks || tasks.length === 0) {
-    tasks = HIST.map((row, i) => ({
+let tasks = JSON.parse(localStorage.getItem('labTasks')) || [];
+
+if (!localStorage.getItem('historyImported_v1')) {
+    const initialTasks = HIST.map((row, i) => ({
         id: 'hist_' + i,
         date: row[0],
         time: row[10] || '09:00',
@@ -111,7 +112,11 @@ if (!tasks || tasks.length === 0) {
         title: row[4] + (row[5] && row[5] !== 'General' ? ' (' + row[5] + ')' : ''),
         desc: row[8] || 'No notes'
     }));
+    
+    // Merge history with any existing tasks
+    tasks = [...tasks, ...initialTasks];
     localStorage.setItem('labTasks', JSON.stringify(tasks));
+    localStorage.setItem('historyImported_v1', 'true');
 }
 
 
