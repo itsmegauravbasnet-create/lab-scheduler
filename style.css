@@ -162,6 +162,21 @@ body {
     margin-bottom: 0.5rem;
 }
 
+.delete-btn {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+    padding: 0 0.5rem;
+}
+
+.delete-btn:hover {
+    color: var(--danger);
+}
+
 .task-time {
     font-weight: 600;
     font-size: 1.1rem;

@@ -363,12 +363,25 @@ function renderTasks() {
         card.className = 'task-card';
         card.innerHTML = `
             <div class="task-header">
-                <span class="task-time">${task.time}</span>
-                <span class="task-category cat-${task.category}">${task.category}</span>
+                <div style="display:flex; align-items:center; gap:0.5rem;">
+                    <span class="task-time">${task.time}</span>
+                    <span class="task-category cat-${task.category}">${task.category}</span>
+                </div>
+                <button class="delete-btn" data-id="${task.id}" title="Delete Task">&times;</button>
             </div>
             <h3 class="task-title">${task.title}</h3>
             <p class="task-desc">${task.desc}</p>
         `;
+        
+        const deleteBtn = card.querySelector('.delete-btn');
+        deleteBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to delete this task?')) {
+                tasks = tasks.filter(t => t.id !== task.id);
+                saveTasks();
+                renderTasks();
+            }
+        });
+        
         scheduleList.appendChild(card);
     });
 }
